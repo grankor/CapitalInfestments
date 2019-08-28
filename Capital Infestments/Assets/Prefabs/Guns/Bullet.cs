@@ -5,12 +5,17 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    [Tooltip("Amount of damage done by bullet")]
+    public float Damage = 10;
+
+    [Tooltip("Time until bullet despawn")] public float DespawnTime = 15;
+
     private DateTime _despawnTime;
 
 
     private void Start()
     {
-        _despawnTime = DateTime.Now.AddSeconds(15);
+        _despawnTime = DateTime.Now.AddSeconds(DespawnTime);
     }
 
     void Update()
@@ -19,6 +24,7 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
         transform.Translate(Vector3.forward * 20 * Time.deltaTime);
     }
 
@@ -26,7 +32,14 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.tag == "NPC")
         {
-            collision.gameObject.GetComponent<BaseNPCEnemy>().Hit(1, transform);
+            collision.gameObject.GetComponentInParent<BaseNPCEnemy>().Hit(Damage, transform);
+            //collision.gameObject.GetComponent<BaseNPCEnemy>().Hit(Damage, transform);
+            Destroy(gameObject);
+        }
+
+        if (collision.gameObject.layer == 9)
+        {
+            Destroy(gameObject);
         }
     }
 }
